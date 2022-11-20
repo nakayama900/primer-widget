@@ -1,4 +1,3 @@
-import React, {MouseEventHandler, useCallback, useState} from 'react'
 import {ForwardRefComponent as PolymorphicForwardRefComponent} from './utils/polymorphic'
 import classnames from 'classnames'
 
@@ -8,6 +7,7 @@ import {Merge} from './utils/types'
 import TextInputWrapper, {StyledWrapperProps} from './_TextInputWrapper'
 import UnstyledTextInput from './_UnstyledTextInput'
 import TextInputAction from './_TextInputInnerAction'
+import {ComponentProps, createSignal, JSX} from "solid-js";
 
 export type TextInputNonPassthroughProps = {
   /** @deprecated Use `leadingVisual` or `trailingVisual` prop instead */
@@ -48,10 +48,12 @@ export type TextInputNonPassthroughProps = {
   | 'validationStatus'
 >
 
-export type TextInputProps = Merge<React.ComponentPropsWithoutRef<'input'>, TextInputNonPassthroughProps>
-
+// export type TextInputProps = Merge<React.ComponentPropsWithoutRef<'input'>, TextInputNonPassthroughProps>
+export type TextInputProps= Omit<ComponentProps<'input'>, keyof TextInputNonPassthroughProps>&TextInputNonPassthroughProps
 // using forwardRef is important so that other components (ex. SelectMenu) can autofocus the input
-const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+// const TextInput = HTMLInputElement, TextInputProps(
+let TextInput
+TextInput = (
   (
     {
       icon: IconComponent,
@@ -80,36 +82,35 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     },
     ref
   ) => {
-    const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
-    const inputRef = useProvidedRefOrCreate(ref as React.RefObject<HTMLInputElement>)
+    const [isInputFocused, setIsInputFocused] = createSignal(false)
+    // const inputRef = useProvidedRefOrCreate(ref as HTMLInputElement)
+    let inputRef : HTMLInputElement|undefined = ref ?? undefined
     // this class is necessary to style FilterSearch, plz no touchy!
-    const wrapperClasses = classnames(className, 'TextInput-wrapper')
+    // const wrapperClasses = classnames(className, 'TextInput-wrapper')
+    const wrapperClasses = className.map( (value)=>'TextInput-wrapper'+value)
     const showLeadingLoadingIndicator =
       loading && (loaderPosition === 'leading' || Boolean(LeadingVisual && loaderPosition !== 'trailing'))
     const showTrailingLoadingIndicator =
       loading && (loaderPosition === 'trailing' || Boolean(loaderPosition === 'auto' && !LeadingVisual))
-    const focusInput: MouseEventHandler = () => {
-      inputRef.current?.focus()
+    const focusInput: JSX.EventHandler<HTMLInputElement, MouseEvent> = () => {
+      // inputRef.current?.focus()
+        inputRef?.focus()
     }
-    const handleInputFocus = useCallback(
+    const handleInputFocus =
       e => {
         setIsInputFocused(true)
         onFocus && onFocus(e)
-      },
-      [onFocus]
-    )
-    const handleInputBlur = useCallback(
+      }
+    const handleInputBlur =
       e => {
         setIsInputFocused(false)
         onBlur && onBlur(e)
-      },
-      [onBlur]
-    )
+      }
 
     return (
       <TextInputWrapper
         block={block}
-        className={wrapperClasses}
+        classList={wrapperClasses}
         validationStatus={validationStatus}
         contrast={contrast}
         disabled={disabled}
@@ -123,7 +124,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
         hasLeadingVisual={Boolean(LeadingVisual || showLeadingLoadingIndicator)}
         hasTrailingVisual={Boolean(TrailingVisual || showTrailingLoadingIndicator)}
         hasTrailingAction={Boolean(trailingAction)}
-        isInputFocused={isInputFocused}
+        isInputFocused={isInputFocused()}
         onClick={focusInput}
         aria-live="polite"
         aria-busy={Boolean(loading)}
@@ -155,14 +156,15 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       </TextInputWrapper>
     )
   }
-) as PolymorphicForwardRefComponent<'input', TextInputProps>
+) as any
+// ) as Merge<React.ComponentPropsWithoutRef<'input'>, TextInputNonPassthroughProps>t<'input', TextInputProps>
+// ) as Omit<ParentProps<HTMLInputElement>, keyof TextInputNonPassthroughProps> & TextInputNonPassthroughProps , t<'input',TextInputProps>
+// TextInput.defaultProps = {
+//   type: 'text',
+//   loaderPosition: 'auto'
+// }
 
-TextInput.defaultProps = {
-  type: 'text',
-  loaderPosition: 'auto'
-}
-
-TextInput.displayName = 'TextInput'
+// TextInput.displayName = 'TextInput'
 
 export default Object.assign(TextInput, {
   Action: TextInputAction

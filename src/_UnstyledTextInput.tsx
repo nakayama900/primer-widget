@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import {styled} from 'solid-styled-components'
 import sx from './sx'
 
-const UnstyledTextInput = styled.input`
+const UnstyledTextInput = styled('input')`
   border: 0;
   font-size: inherit;
   font-family: inherit;

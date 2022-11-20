@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'react'
+// import {useCallback, useEffect, useRef} from 'react'
 
 type SetTimeout = (handler: TimerHandler, timeout?: number, ...args: unknown[]) => number
 type ClearTimeout = (id: number) => void

@@ -1,9 +1,11 @@
-import styled from 'styled-components'
-import React, {ChangeEventHandler, InputHTMLAttributes, ReactElement, useContext} from 'react'
+import {styled} from 'solid-styled-components'
+// import React, {ChangeEventHandler, InputHTMLAttributes, ReactElement, useContext} from 'react'
 import sx, {SxProp} from './sx'
 import {FormValidationStatus} from './utils/types/FormValidationStatus'
 import {RadioGroupContext} from './RadioGroup'
 import getGlobalFocusStyles from './_getGlobalFocusStyles'
+import {createContext, JSX, JSXElement, useContext,splitProps} from "solid-js";
+import HTMLAttributes = JSX.HTMLAttributes;
 
 export type RadioProps = {
   /**
@@ -26,7 +28,7 @@ export type RadioProps = {
   /**
    * Forward a ref to the underlying input element
    */
-  ref?: React.RefObject<HTMLInputElement>
+  ref?: HTMLInputElement
   /**
    * Indicates whether the radio button must be checked before the form can be submitted
    */
@@ -35,14 +37,15 @@ export type RadioProps = {
    * Only used to inform ARIA attributes. Individual radio inputs do not have validation styles.
    */
   validationStatus?: FormValidationStatus
-} & InputHTMLAttributes<HTMLInputElement> &
+} & HTMLAttributes<HTMLInputElement> &
+    // InputHTMLAttributes<HTMLInputElement> &
   SxProp
 
 const StyledRadio = styled.input`
   cursor: pointer;
 
   ${props => props.disabled && `cursor: not-allowed;`}
-  ${getGlobalFocusStyles(0)};
+  ${getGlobalFocusStyles('0')};
 
   ${sx}
 `
@@ -50,17 +53,25 @@ const StyledRadio = styled.input`
 /**
  * An accessible, native radio component for selecting one option from a list.
  */
-const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
+const Radio =(
   (
-    {checked, disabled, name: nameProp, onChange, sx: sxProp, required, validationStatus, value, ...rest}: RadioProps,
-    ref
-  ): ReactElement => {
-    const radioGroupContext = useContext(RadioGroupContext)
-    const handleOnChange: ChangeEventHandler<HTMLInputElement> = e => {
-      radioGroupContext?.onChange && radioGroupContext.onChange(e)
+      props: RadioProps,ref
+    // {checked, disabled, name: nameProp, onChange, sx: sxProp, required, validationStatus, value, ...rest}: RadioProps,
+    // ref
+  ): JSXElement => {
+    const
+        [{checked, disabled, name: nameProp, onChange, sx: sxProp, required, validationStatus, value} ,rest]=
+            splitProps(props,["checked", "disabled", "name", "onChange", "sx", "required", "validationStatus", "value"])
+    const [getRadioGroupContext] = useContext<{
+  disabled?: boolean
+  onChange?: JSX.EventHandler<HTMLInputElement,InputEvent>
+  name: string
+} >(RadioGroupContext)
+    const handleOnChange: JSX.EventHandler<HTMLInputElement,InputEvent> = e => {
+      getRadioGroupContext()?.onChange && getRadioGroupContext().onChange(e)
       onChange && onChange(e)
     }
-    const name = nameProp || radioGroupContext?.name
+    const name = nameProp || radioGroupContext()?.name
 
     if (!name) {
       // eslint-disable-next-line no-console
@@ -74,7 +85,7 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
         type="radio"
         value={value}
         name={name}
-        ref={ref}
+        ref={props.ref}
         disabled={disabled}
         aria-disabled={disabled ? 'true' : 'false'}
         checked={checked}
@@ -90,6 +101,6 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   }
 )
 
-Radio.displayName = 'Radio'
+// Radio.displayName = 'Radio'
 
 export default Radio

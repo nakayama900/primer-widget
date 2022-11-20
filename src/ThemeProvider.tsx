@@ -1,4 +1,4 @@
-import {createEffect, createSignal, createContext} from 'solid-js';
+import {createEffect, createSignal, createContext, Component, ParentComponent} from 'solid-js';
 import {ThemeProvider as SCThemeProvider} from 'solid-styled-components';
 import { DefaultTheme } from './theme';
 import { MergeProps } from 'solid-js';
@@ -48,7 +48,7 @@ const getServerHandoff = () => {
   return {}
 }
 
-export const ThemeProvider: React.FC<React.PropsWithChildren<ThemeProviderProps>> = ({children, ...props}) => {
+export const ThemeProvider: ParentComponent<ThemeProviderProps> = ({children, ...props}) => {
   // Get fallback values from parent ThemeProvider (if exists)
   const {
     theme: fallbackTheme,
@@ -63,9 +63,9 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<ThemeProviderProps>
   const {resolvedServerColorMode} = getServerHandoff()
   const resolvedColorModePassthrough = React.useRef(resolvedServerColorMode)
 
-  const [colorMode, setColorMode] = React.useState(props.colorMode ?? fallbackColorMode ?? defaultColorMode)
-  const [dayScheme, setDayScheme] = React.useState(props.dayScheme ?? fallbackDayScheme ?? defaultDayScheme)
-  const [nightScheme, setNightScheme] = React.useState(props.nightScheme ?? fallbackNightScheme ?? defaultNightScheme)
+  const [colorMode, setColorMode] = createSignal(props.colorMode ?? fallbackColorMode ?? defaultColorMode)
+  const [dayScheme, setDayScheme] = createSignal(props.dayScheme ?? fallbackDayScheme ?? defaultDayScheme)
+  const [nightScheme, setNightScheme] = createSignal(props.nightScheme ?? fallbackNightScheme ?? defaultNightScheme)
   const systemColorMode = useSystemColorMode()
   const resolvedColorMode = resolvedColorModePassthrough.current || resolveColorMode(colorMode, systemColorMode)
   const colorScheme = chooseColorScheme(resolvedColorMode, dayScheme, nightScheme)
@@ -139,7 +139,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<ThemeProviderProps>
 }
 
 export function useTheme() {
-  return React.useContext(ThemeContext)
+  return createContext(ThemeContext)
 }
 
 export function useColorSchemeVar(values: Partial<Record<string, string>>, fallback: string) {

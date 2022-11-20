@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components'
+import { styled, css} from 'solid-styled-components'
 import {maxWidth, MaxWidthProps, minWidth, MinWidthProps, variant, width, WidthProps} from 'styled-system'
 import {get} from './constants'
 import sx, {SxProp} from './sx'
@@ -196,13 +196,13 @@ const TextInputWrapper = styled(TextInputBaseWrapper)<StyledWrapperProps>`
 
   ${props =>
     css`
-      padding-left: ${props.hasLeadingVisual ? textInputHorizPadding : 0};
-      padding-right: ${props.hasTrailingVisual && !props.hasTrailingAction ? textInputHorizPadding : 0};
+      padding-left: ${props.hasLeadingVisual ? textInputHorizPadding : '0'};
+      padding-right: ${props.hasTrailingVisual && !props.hasTrailingAction ? textInputHorizPadding : '0'};
 
       > input,
       > select {
-        padding-left: ${!props.hasLeadingVisual ? textInputHorizPadding : 0};
-        padding-right: ${!props.hasTrailingVisual && !props.hasTrailingAction ? textInputHorizPadding : 0};
+        padding-left: ${!props.hasLeadingVisual ? textInputHorizPadding : '0'};
+        padding-right: ${!props.hasTrailingVisual && !props.hasTrailingAction ? textInputHorizPadding : '0'};
       }
     `}
 

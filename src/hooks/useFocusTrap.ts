@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import {focusTrap} from '@primer/behaviors'
 import {useProvidedRefOrCreate} from './useProvidedRefOrCreate'
 

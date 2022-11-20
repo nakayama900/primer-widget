@@ -1,4 +1,5 @@
-import React, {useEffect, useCallback, useMemo} from 'react'
+import {createEffect, createMemo, createSignal} from "solid-js";
+import {create} from "domain";
 
 export type TouchOrMouseEvent = MouseEvent | TouchEvent
 type TouchOrMouseEventCallback = (event: TouchOrMouseEvent) => boolean | undefined
@@ -38,12 +39,13 @@ function deregister(id: number) {
 }
 
 // For auto-incrementing unique identifiers for registered handlers.
-let handlerId = 0
+let [handlerId,setHandlerId] = createSignal(0)
 
 export const useOnOutsideClick = ({containerRef, ignoreClickRefs, onClickOutside}: UseOnOutsideClickSettings) => {
-  const id = useMemo(() => handlerId++, [])
+  const id = createMemo(() => {setHandlerId(handlerId()+1);return handlerId()+1}, [])
 
-  const handler = useCallback<TouchOrMouseEventCallback>(
+  // const handler = <TouchOrMouseEventCallback>
+  const handler=
     event => {
       // don't call click handler if the mouse event was triggered by an auxiliary button (right click/wheel button/etc)
       if (event instanceof MouseEvent && event.button > 0) {
@@ -61,19 +63,17 @@ export const useOnOutsideClick = ({containerRef, ignoreClickRefs, onClickOutside
       }
 
       onClickOutside(event)
-    },
-    [containerRef, ignoreClickRefs, onClickOutside]
-  )
+    }
 
-  useEffect(() => {
+  createEffect(() => {
     if (Object.keys(registry).length === 0) {
       // use capture to ensure we get all events
       document.addEventListener('mousedown', handleClick, {capture: true})
     }
-    register(id, handler)
+    register(id(), handler)
 
     return () => {
-      deregister(id)
+      deregister(id())
       if (Object.keys(registry).length === 0) {
         document.removeEventListener('mousedown', handleClick, {capture: true})
       }

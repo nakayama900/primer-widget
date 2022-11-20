@@ -1,4 +1,5 @@
-import css, {SystemCssProperties, SystemStyleObject} from '@styled-system/css'
+import  {SystemCssProperties, SystemStyleObject} from '@styled-system/css'
+import {css} from "solid-styled-components";
 import {ThemeColorPaths, ThemeShadowPaths} from './theme'
 import {ColorProps, ShadowProps} from 'styled-system'
 import merge from 'deepmerge'
@@ -23,10 +24,14 @@ type CSSSelectorObject = {
 export type BetterSystemStyleObject = BetterCssProperties | SystemStyleObject | CSSCustomProperties | CSSSelectorObject
 
 export interface SxProp {
-  sx?: BetterSystemStyleObject
+  // sx?: BetterSystemStyleObject
+  sx?:string|object|Function
 }
 
-const sx = (props: SxProp) => css(props.sx)
+
+const sx = (props) => {
+  return css(props.sx);
+}
 
 export default sx
 

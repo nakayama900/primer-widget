@@ -1,5 +1,6 @@
-import React, {useEffect} from 'react'
+// import React, {useEffect} from 'react'
 import {iterateFocusableElements} from '@primer/behaviors/utils'
+import {createEffect, onCleanup} from "solid-js";
 
 export type UseOpenAndCloseFocusSettings = {
   initialFocusRef?: React.RefObject<HTMLElement>
@@ -14,7 +15,7 @@ export function useOpenAndCloseFocus({
   containerRef,
   preventFocusOnOpen
 }: UseOpenAndCloseFocusSettings): void {
-  useEffect(() => {
+  createEffect(() => {
     if (preventFocusOnOpen) {
       return
     }
@@ -25,8 +26,8 @@ export function useOpenAndCloseFocus({
       const firstItem = iterateFocusableElements(containerRef.current).next().value
       firstItem?.focus()
     }
-    return function () {
+    onCleanup( function () {
       returnRef?.focus()
-    }
+    })
   }, [initialFocusRef, returnFocusRef, containerRef, preventFocusOnOpen])
 }

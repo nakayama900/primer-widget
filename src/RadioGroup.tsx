@@ -1,4 +1,5 @@
-import React, {ChangeEvent, ChangeEventHandler, createContext, FC} from 'react'
+// import React, {ChangeEvent, ChangeEventHandler, createContext, FC} from 'react'
+import {createContext, JSX, JSXElement, ParentProps} from "solid-js";
 import CheckboxOrRadioGroup, {CheckboxOrRadioGroupProps} from './_CheckboxOrRadioGroup'
 import CheckboxOrRadioGroupCaption from './_CheckboxOrRadioGroup/_CheckboxOrRadioGroupCaption'
 import CheckboxOrRadioGroupLabel from './_CheckboxOrRadioGroup/_CheckboxOrRadioGroupLabel'
@@ -10,7 +11,7 @@ type RadioGroupProps = {
   /**
    * An onChange handler that gets called when the selection changes
    */
-  onChange?: (selected: string | null, e?: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (selected: string | null, e?: JSX.EventHandler<HTMLInputElement,InputEvent>) => void
   /**
    * The name used to identify this group of radios
    */
@@ -20,14 +21,14 @@ type RadioGroupProps = {
 
 export const RadioGroupContext = createContext<{
   disabled?: boolean
-  onChange?: ChangeEventHandler<HTMLInputElement>
+  onChange?: JSX.EventHandler<HTMLInputElement,InputEvent>
   name: string
 } | null>(null)
 
-const RadioGroup: FC<React.PropsWithChildren<RadioGroupProps>> = ({children, disabled, onChange, name, ...rest}) => {
+const RadioGroup: ParentProps<RadioGroupProps> = ({children, disabled, onChange, name, ...rest}) => {
   const [selectedRadioValue, setSelectedRadioValue] = useRenderForcingRef<string | null>(null)
 
-  const updateSelectedCheckboxes: ChangeEventHandler<HTMLInputElement> = e => {
+  const updateSelectedCheckboxes: JSX.EventHandler<HTMLInputElement,InputEvent> = e => {
     const {value, checked} = e.currentTarget
 
     if (checked) {

@@ -1,17 +1,20 @@
-import React from 'react'
-import styled, {createGlobalStyle} from 'styled-components'
+import {styled, css }  from 'solid-styled-components'
 import {COMMON, SystemCommonProps, SystemTypographyProps, TYPOGRAPHY} from './constants'
 import {useTheme} from './ThemeProvider'
 import {ComponentProps} from './utils/types'
 
 // load polyfill for :focus-visible
 import 'focus-visible'
+import { createContext, splitProps } from 'solid-js'
+import {RouterContext} from "@solidjs/router/dist/types";
 
-const GlobalStyle = createGlobalStyle<{colorScheme?: 'light' | 'dark'}>`
+const createGlobalStyle =(props:{colorscheme?: 'light'| 'dark'})=> createContext({defaultValue: css(props)})
+// const GlobalStyle = createGlobalStyle<{colorScheme?: 'light' | 'dark'}>`
+const GlobalStyle = createContext<string>(`
   * { box-sizing: border-box; }
   body { margin: 0; }
   table { border-collapse: collapse; }
-  input { color-scheme: ${props => props.colorScheme}; }
+  input { color-scheme: ${(props: any) => props.colorScheme}; }
 
   [role="button"]:focus:not(:focus-visible):not(.focus-visible),
   [role="tabpanel"][tabindex="0"]:focus:not(:focus-visible):not(.focus-visible),
@@ -26,17 +29,17 @@ const GlobalStyle = createGlobalStyle<{colorScheme?: 'light' | 'dark'}>`
   details-dialog:focus:not(:focus-visible):not(.focus-visible) {
     outline: none;
   }
-`
+`).Provider
 
-const Base = styled.div<SystemTypographyProps & SystemCommonProps>`
+const Base = styled('div')<SystemTypographyProps & SystemCommonProps>(`
   ${TYPOGRAPHY};
   ${COMMON};
-`
+`)
 
 export type BaseStylesProps = ComponentProps<typeof Base>
 
 function BaseStyles(props: BaseStylesProps) {
-  const {children, ...rest} = props
+  const [children, rest] = splitProps(props, ['children'])
   const {colorScheme} = useTheme()
 
   return (

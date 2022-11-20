@@ -23,20 +23,22 @@ import {
 } from 'styled-system'
 import sx, {SxProp} from './sx'
 import {ComponentProps} from './utils/types'
+import {ParentComponent, ParentProps} from "solid-js";
 
-// type StyledBoxProps = SpaceProps &
-//   ColorProps &
-//   TypographyProps &
-//   LayoutProps &
-//   FlexboxProps &
-//   GridProps &
-//   BackgroundProps &
-//   BorderProps &
-//   PositionProps &
-//   ShadowProps &
-//   SxProp
+type StyledBoxProps = SpaceProps &
+  ColorProps &
+  TypographyProps &
+  LayoutProps &
+  FlexboxProps &
+  GridProps &
+  BackgroundProps &
+  BorderProps &
+  PositionProps &
+  ShadowProps &
+  SxProp
 
-const Box = styled('div')`
+const Box =
+  styled('div')`
   ${space};
   ${color};
   ${typography};

@@ -1,5 +1,5 @@
-import {CSSProperties} from 'react'
-import {css} from 'styled-components'
+// import {CSSProperties} from 'react'
+import {css} from 'solid-styled-components'
 import {get} from './constants'
 
 const globalFocusStyle = css`
@@ -7,7 +7,8 @@ const globalFocusStyle = css`
   outline: 2px solid ${get('colors.accent.fg')};
 `
 
-const getGlobalFocusStyles = (outlineOffset?: CSSProperties['outlineOffset']) => css`
+// const getGlobalFocusStyles = (outlineOffset?: CSSProperties['outlineOffset']) => css`
+const getGlobalFocusStyles = (outlineOffset?: string) => css`
   /* fallback :focus state */
   &:focus:not(:disabled) {
     ${globalFocusStyle};

@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from 'react'
+import {createEffect,onCleanup} from "solid-js";
 
 const noop = () => null
 
@@ -12,13 +12,13 @@ function focusable(el: Element) {
 }
 
 type UseDialogParameters = {
-  modalRef: React.RefObject<HTMLElement>
-  overlayRef: React.RefObject<HTMLElement>
+  modalRef: HTMLElement|undefined
+  overlayRef: HTMLElement|undefined
   isOpen?: boolean
   onDismiss?: () => void
-  initialFocusRef?: React.RefObject<HTMLElement>
-  closeButtonRef?: React.RefObject<HTMLElement>
-  returnFocusRef?: React.RefObject<HTMLElement>
+  initialFocusRef?: HTMLElement|undefined
+  closeButtonRef?: HTMLElement|undefined
+  returnFocusRef?: HTMLElement|undefined
 }
 
 function useDialog({
@@ -29,21 +29,24 @@ function useDialog({
   initialFocusRef,
   closeButtonRef
 }: UseDialogParameters) {
-  const onClickOutside = useCallback(
+  const onClickOutside = (
     e => {
       if (
-        modalRef.current &&
-        overlayRef.current &&
+        modalRef &&
+        overlayRef &&
         !modalRef.current.contains(e.target) &&
+        /*  TODO: Study about Ref on Solid.js
+         *    And Study the way to compare Ref on Solid.js
+
+         */
         overlayRef.current.contains(e.target)
       ) {
         onDismiss()
       }
-    },
-    [onDismiss, modalRef, overlayRef]
-  )
+    })
 
-  useEffect(() => {
+
+  createEffect(() => {
     if (isOpen) {
       document.addEventListener('click', onClickOutside)
       return () => {
@@ -51,8 +54,9 @@ function useDialog({
       }
     }
   }, [isOpen, onClickOutside])
+  onCleanup(()=>document.removeEventListener('click',onClickOutside))
 
-  useEffect(() => {
+  createEffect(() => {
     if (isOpen) {
       if (initialFocusRef && initialFocusRef.current) {
         initialFocusRef.current.focus()

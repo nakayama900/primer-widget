@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/primer-widget.iml" filepath="$PROJECT_DIR$/.idea/primer-widget.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../primer/react/.idea/react.iml" filepath="$PROJECT_DIR$/../../primer/react/.idea/react.iml" />
     </modules>
   </component>
 </project>

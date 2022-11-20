@@ -1,5 +1,4 @@
-import React, {forwardRef, useRef} from 'react'
-import styled from 'styled-components'
+import {styled} from 'solid-styled-components'
 import ButtonClose from './deprecated/Button/ButtonClose'
 import {get} from './constants'
 import Box from './Box'
@@ -16,7 +15,7 @@ type StyledDialogBaseProps = {
   wide?: boolean
 } & SxProp
 
-const DialogBase = styled.div<StyledDialogBaseProps>`
+const DialogBase = styled('div')<StyledDialogBaseProps>`
   box-shadow: ${get('shadows.shadow.large')};
   border-radius: ${get('radii.2')};
   position: fixed;
@@ -37,7 +36,7 @@ const DialogBase = styled.div<StyledDialogBaseProps>`
     height: 100vh;
   }
 
-  ${sx};
+  ${props=>sx(props.sx )??''};
 `
 
 const DialogHeaderBase = styled(Box)<SxProp>`
@@ -49,12 +48,13 @@ const DialogHeaderBase = styled(Box)<SxProp>`
     border-radius: 0px;
   }
 
-  ${sx};
+  ${props=>sx(props.sx)};
 `
 export type DialogHeaderProps = ComponentProps<typeof DialogHeaderBase>
 
 function DialogHeader({theme, children, backgroundColor = 'gray.1', ...rest}: DialogHeaderProps) {
-  if (React.Children.toArray(children).every(ch => typeof ch === 'string')) {
+  // if (React.Children.toArray(children).every(ch => typeof ch === 'string')) {
+     if (typeof children === 'string') {
     children = (
       <Text theme={theme} color="fg.default" fontSize={1} fontWeight="bold" fontFamily="sans-serif">
         {children}
@@ -88,16 +88,16 @@ const Overlay = styled.span`
 type InternalDialogProps = {
   isOpen?: boolean
   onDismiss?: () => void
-  initialFocusRef?: React.RefObject<HTMLElement>
-  returnFocusRef?: React.RefObject<HTMLElement>
+  initialFocusRef?:HTMLElement
+  returnFocusRef?: HTMLElement
 } & ComponentProps<typeof DialogBase>
 
 const Dialog = forwardRef<HTMLDivElement, InternalDialogProps>(
   ({children, onDismiss = noop, isOpen, initialFocusRef, returnFocusRef, ...props}, forwardedRef) => {
-    const overlayRef = useRef(null)
-    const modalRef = useRef<HTMLDivElement>(null)
+    let overlayRef
+    let modalRef:HTMLDivElement;
     useRefObjectAsForwardedRef(forwardedRef, modalRef)
-    const closeButtonRef = useRef(null)
+    let closeButtonRef
 
     const onCloseClick = () => {
       onDismiss()
