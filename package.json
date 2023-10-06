@@ -44,7 +44,7 @@
     "chroma-js": "^2.4.2",
     "solid-styled-components": "^0.28.5",
     "typescript": "^4.9.3",
-    "vite": "^3.2.4",
+    "vite": "^3.2.7",
     "vite-plugin-solid": "^2.4.0"
   },
   "dependencies": {
